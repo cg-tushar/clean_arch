@@ -42,13 +42,6 @@ abstract class StateController<T, P> extends GetxController {
   }
 }
 
-class SuperStateController<T, P> extends StateController<T, P> {
-  @override
-  void onInit() {
-    checkConnectivity();
-    super.onInit();
-  }
-}
 
 extension ConnectivityChecker on GetxController {
   void checkConnectivity() {
@@ -63,13 +56,3 @@ extension ConnectivityChecker on GetxController {
   }
 }
 
-extension LocalStorageCleaner on GetxController {
-  void clearLocalStorage({String? key}) {
-    LocalStorage localStorageInstance = Get.find<LocalStorage>();
-    if (key == null) {
-      localStorageInstance.deleteAllSecureData();
-    } else {
-      localStorageInstance.deleteSecureData(key);
-    }
-  }
-}

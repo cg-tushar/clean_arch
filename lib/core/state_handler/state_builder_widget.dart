@@ -5,6 +5,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import '../../widgets/base_snackbar_widget.dart';
 import '../network/base/response_handler.dart';
 import 'state_controller.dart';
+import 'super_state_controller.dart';
 
 // ?  SuperWidget to call api and works as stream to update data from local to network
 
