@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:clean_arch/extensions/http_string.dart';
 import 'package:get/get_connect/connect.dart';
 
 import '../../../services/logger_service.dart';
