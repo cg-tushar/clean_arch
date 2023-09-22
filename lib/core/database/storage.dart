@@ -1,64 +1,58 @@
-import 'dart:developer';
-
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'interfaces/local_db_interface.dart';
 
-
 class LocalStorage implements BaseLocalStorageInterface {
-  static final LocalStorage instance = LocalStorage._();
-  static late final FlutterSecureStorage _secureStorage;
+  final SharedPreferences _sharedPreferences;
 
-  LocalStorage._();
+  static LocalStorage? _singleton;
 
-  // final IOSOptions options = const IOSOptions(accessibility: KeychainAccessibility.first_unlock);
-  // IOSOptions _getIosOptions() => const IOSOptions();
-
-  AndroidOptions _getAndroidOptions() => const AndroidOptions(
-        encryptedSharedPreferences: true,
-      );
-
-  initialize() {
-    _secureStorage = const FlutterSecureStorage();
+  factory LocalStorage() {
+    if (_singleton == null) {
+      throw Exception("Must call init() before using this singleton");
+    }
+    return _singleton!;
   }
 
-  @override
+  LocalStorage._(this._sharedPreferences);
+
+  static Future<void> init() async {
+    if (_singleton == null) {
+      final prefs = await SharedPreferences.getInstance();
+      _singleton = LocalStorage._(prefs);
+    }
+  }
+
+@override
   Future<void> writeSecureData(StorageItem newItem) async {
-    await _secureStorage.write(
-        key: newItem.key, value: newItem.value, aOptions: _getAndroidOptions());
+    await _sharedPreferences.setString(newItem.key, newItem.value);
   }
 
   @override
   Future<String?> readSecureData(String key) async {
-    String? readData =
-        await _secureStorage.read(key: key, aOptions: _getAndroidOptions());
+    String? readData = _sharedPreferences.getString(key);
     return readData;
   }
 
   @override
   Future<void> deleteSecureData(String key) async {
-    await _secureStorage.delete(key: key, aOptions: _getAndroidOptions());
+    await _sharedPreferences.remove(key);
   }
 
   @override
   Future<bool> containsKeyInSecureData(String key) async {
-    bool containsKey = await _secureStorage.containsKey(
-        key: key, aOptions: _getAndroidOptions());
+    bool containsKey = _sharedPreferences.containsKey(key);
     return containsKey;
   }
 
   @override
-  Future<List<StorageItem>> readAllSecureData() async {
-    Map<String, String> allData =
-        await _secureStorage.readAll(aOptions: _getAndroidOptions());
-    List<StorageItem> list =
-        allData.entries.map((e) => StorageItem(e.key, e.value)).toList();
-    return list;
+  Future<void> deleteAllSecureData() async {
+    await _sharedPreferences.clear();
   }
 
   @override
-  Future<void> deleteAllSecureData() async {
-    await _secureStorage.deleteAll(aOptions: _getAndroidOptions());
-    log("Local Data Deleted Successfully");
+  Future<List<StorageItem>> readAllSecureData() {
+    // TODO: implement readAllSecureData
+    throw UnimplementedError();
   }
 }

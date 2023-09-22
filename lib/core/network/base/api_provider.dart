@@ -27,23 +27,23 @@ class APIProvider {
   Stream<Response> request(APIRequestRepresentable request) async* {
     try {
       if (request.cache) {
-        final localItem = await LocalStorage.instance.readSecureData(_cacheKeyGenerator.generate(request.endpoint, request.query));
+        final localItem = await LocalStorage().readSecureData(_cacheKeyGenerator.generate(request.endpoint, request.query));
         if (localItem != null) {
           LoggerService.instance
               .logLocalResponse(data: localItem, key: _cacheKeyGenerator.generate(request.endpoint, request.query));
           yield Response(body: jsonDecode(localItem), statusCode: 200);
         }
       }
-      final response = await _client.request(request.URL+request.endpoint, request.method.string,
+      final response = await _client.request(request.URL + request.endpoint, request.method.string,
           headers: request.headers, query: request.query, body: request.body);
       LoggerService.instance.logNetworkResponse(response);
       // LoggerService.networkLogWriter(response,isError: response.hasError);
       if (response.isOk) {
-        LocalStorage.instance
+        LocalStorage()
             .writeSecureData(StorageItem(_cacheKeyGenerator.generate(request.endpoint, request.query), jsonEncode(response.body)));
         yield response;
       } else {
-        showSnackBar(response.bodyString ?? "",isError: true);
+        showSnackBar(response.bodyString ?? "", isError: true);
         yield response;
       }
     } on TimeoutException catch (_) {
