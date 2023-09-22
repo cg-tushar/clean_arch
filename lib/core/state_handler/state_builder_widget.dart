@@ -9,8 +9,8 @@ import 'super_state_controller.dart';
 
 // ?  SuperWidget to call api and works as stream to update data from local to network
 
-class SuperStateBuilder<T extends SuperStateController<T, P>, P> extends GetView<T> {
-  final Widget Function(NetworkResponse<P>?) child;
+class SuperStateBuilder<T extends SuperStateController<P>, P> extends GetView<T> {
+  final Widget Function(T controller,P? response) child;
   const SuperStateBuilder({super.key, required this.child});
 
   @override
@@ -20,12 +20,12 @@ class SuperStateBuilder<T extends SuperStateController<T, P>, P> extends GetView
         case NetworkState.loading:
           return const CircularProgressIndicator();
         case NetworkState.error:
-          showSnackBar("SuperStateBuilder:ERROR=> ${controller.state.value.error}");
-          return Text("SuperStateBuilder:ERROR=> ${controller.state.value.error ?? ''}");
+          // return Text("SuperStateBuilder:ERROR=> ${controller.state.value.error ?? ''}");
+          return Text(controller.state.value.error ?? '');
         case NetworkState.success:
-          return child(controller.state.value);
+          return child(controller,controller.state.value.data);
         default:
-          return child(controller.state.value);
+          return child(controller,controller.state.value.data);
       }
     });
   }

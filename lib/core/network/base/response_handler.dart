@@ -22,26 +22,6 @@ class NetworkResponseHandler<P extends BaseModel> {
         );
     }
   }
-  // if(response.isOk){
-  //   switch (response.statusCode) {
-  //     case 200:
-  //       return NetworkResponse<P>.success(data: Get.find<P>().fromJson(response.body));
-  //     default:
-  //       return NetworkResponse<P>.loading(
-  //         error: response.statusPext,
-  //         statusCode: response.statusCode ?? 0,
-  //         isError: false,
-  //       );
-  //   }
-  // }
-  // else{
-  //   return  NetworkResponse<P>.loading(
-  //   error: response.statusPext,
-  // statusCode: response.statusCode ?? 0,
-  // isError: false,
-  // )
-  // }
-  // }
 }
 
 class NetworkResponse<P> {

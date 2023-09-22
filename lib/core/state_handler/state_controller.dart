@@ -10,8 +10,7 @@ import '../network/connectivity/internet_connectivity.dart';
 
 // ? Super Controller to handle states and errors with connectivity checks
 
-abstract class StateController<T, P> extends GetxController {
-  T? stateController;
+abstract class StateController<P> extends GetxController {
 
   late Rx<NetworkResponse<P>> state = NetworkResponse<P>.idle().obs;
 
@@ -40,19 +39,11 @@ abstract class StateController<T, P> extends GetxController {
       return NetworkResponse<P>.idle();
     }
   }
-}
-
-
-extension ConnectivityChecker on GetxController {
-  void checkConnectivity() {
-    RxBool isOnline = RxBool(true);
-    final connection = Get.find<ConnectivityCheck>();
-    connection.connectionStream.stream.listen((event) {
-      isOnline(event);
-    });
-    ever(isOnline, (callback) => showSnackBar(callback ? "Online" : "Offline"));
-
-    ever(isOnline, (callback) {});
+  @override
+  void dispose() {
+    state.close();
+    super.dispose();
   }
 }
+
 

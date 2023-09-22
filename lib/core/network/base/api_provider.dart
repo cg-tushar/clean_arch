@@ -43,7 +43,7 @@ class APIProvider {
             .writeSecureData(StorageItem(_cacheKeyGenerator.generate(request.endpoint, request.query), jsonEncode(response.body)));
         yield response;
       } else {
-        showSnackBar(response.bodyString ?? "Error!!!");
+        showSnackBar(response.bodyString ?? "",isError: true);
         yield response;
       }
     } on TimeoutException catch (_) {
